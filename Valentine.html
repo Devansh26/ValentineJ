@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Invitation for My Wife</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap');
+
+        :root {
+            --primary-pink: #ffafbd;
+            --deep-red: #ff385c;
+            --gold: #d4af37;
+            --soft-white: #fffafa;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Floating Hearts Animation */
+        .heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.7);
+            animation: float 6s infinite ease-in;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+            z-index: 10;
+            position: relative;
+            border: 2px solid var(--gold);
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--deep-red);
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-yes {
+            background-color: var(--deep-red);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 56, 92, 0.3);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            background-color: #e31e44;
+        }
+
+        .btn-no {
+            background-color: #eee;
+            color: #777;
+            position: relative;
+        }
+
+        /* Cafe Selection Styles */
+        #cafe-selection {
+            display: none;
+        }
+
+        .cafe-card {
+            background: white;
+            border: 1px solid #ffe4e8;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s, border 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cafe-card:hover {
+            background: #fff0f3;
+            border-color: var(--deep-red);
+        }
+
+        .cafe-card.selected {
+            border: 2px solid var(--deep-red);
+            background: #ffe4e8;
+        }
+
+        #final-message {
+            display: none;
+            font-family: 'Dancing Script', cursive;
+            color: var(--deep-red);
+            font-size: 2rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="hearts-container"></div>
+
+    <div class="container" id="main-card">
+        <div id="question-step">
+            <h1>Will you be my Valentine?</h1>
+            <p>You make every day feel like a celebration, but let's make this one extra special.</p>
+            <div class="btn-group">
+                <button class="btn-yes" onclick="showCafes()">YES!</button>
+                <button class="btn-no" id="no-btn" onmouseover="moveButton()">No</button>
+            </div>
+        </div>
+
+        <div id="cafe-selection">
+            <h1>Where should we go?</h1>
+            <p>I've shortlisted Mumbai's most romantic spots for you:</p>
+            
+            <div class="cafe-card" onclick="selectCafe(this, 'Olive Bar & Kitchen')">
+                <span><strong>Olive Bar & Kitchen</strong> <br><small>Bandra (Mediterranean Vibes)</small></span>
+                <span>🍷</span>
+            </div>
+            
+            <div class="cafe-card" onclick="selectCafe(this, 'Bayview Cafe')">
+                <span><strong>Bayview Cafe</strong> <br><small>Colaba (Sunset Sea View)</small></span>
+                <span>🌊</span>
+            </div>
+            
+            <div class="cafe-card" onclick="selectCafe(this, 'Aer')">
+                <span><strong>Aer</strong> <br><small>Worli (Rooftop Luxury)</small></span>
+                <span>✨</span>
+            </div>
+
+            <div class="cafe-card" onclick="selectCafe(this, 'Pali Village Cafe')">
+                <span><strong>Pali Village Cafe</strong> <br><small>Bandra (Rustic Romance)</small></span>
+                <span>🕯️</span>
+            </div>
+
+            <button class="btn-yes" style="margin-top: 20px;" onclick="finish()">Confirm Our Date</button>
+        </div>
+
+        <div id="final-message">
+            <h2>It's a Date! ❤️</h2>
+            <p id="details"></p>
+            <p style="font-size: 1rem; color: #888;">I love you more than words can say.</p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.getElementById('hearts-container').appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+        setInterval(createHeart, 300);
+
+        // Move the "No" button so she can't click it!
+        function moveButton() {
+            const btn = document.getElementById('no-btn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        let chosenCafe = "";
+
+        function showCafes() {
+            document.getElementById('question-step').style.display = 'none';
+            document.getElementById('cafe-selection').style.display = 'block';
+        }
+
+        function selectCafe(element, name) {
+            document.querySelectorAll('.cafe-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            chosenCafe = name;
+        }
+
+        function finish() {
+            if (!chosenCafe) {
+                alert("Please pick a place, my love!");
+                return;
+            }
+            document.getElementById('cafe-selection').style.display = 'none';
+            document.getElementById('final-message').style.display = 'block';
+            document.getElementById('details').innerText = "Can't wait to take you to " + chosenCafe + " on February 14th.";
+        }
+    </script>
+</body>
+</html>
